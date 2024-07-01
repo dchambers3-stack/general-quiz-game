@@ -34,41 +34,52 @@ const checkAnswer = (selectedAnswer, isCorrect) => {
     }
 }
 
+// Function to shuffle an array (Fisher-Yates shuffle algorithm)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 
-const showQuestion = ()=>{
-    if(currentQuestionIndex < triviaData.length){
+const showQuestion = () => {
+    if (currentQuestionIndex < triviaData.length) {
         const currentQuestion = triviaData[currentQuestionIndex];
         questionText.textContent = currentQuestion.question.text;
 
-        // clear previos answer options
+        // Combine correct and incorrect answers
+        let answerOptionsArray = [...currentQuestion.incorrectAnswers, currentQuestion.correctAnswer];
+
+        // Shuffle the answer options
+        answerOptionsArray = shuffleArray(answerOptionsArray);
+
+        // Clear previous answer options
         answerOptions.innerHTML = '';
 
-        //display answer options as buttons
-        currentQuestion.incorrectAnswers.forEach((option, index)=>{
+        // Display shuffled answer options as buttons
+        answerOptionsArray.forEach((option, index) => {
             const btnOption = document.createElement('button');
-
             btnOption.textContent = option;
             btnOption.classList.add('option-btn');
-            btnOption.addEventListener('click', ()=> checkAnswer(option))   
-            answerOptions.appendChild(btnOption)
-             })
-             //add correct answer
-             const correctBtnOption = document.createElement('button');
-             correctBtnOption.textContent = currentQuestion.correctAnswer;
-             correctBtnOption.addEventListener('click', ()=> checkAnswer(currentQuestion.correctAnswer));
-             answerOptions.appendChild(correctBtnOption);
-        
+            btnOption.addEventListener('click', () => checkAnswer(option));
+            answerOptions.appendChild(btnOption);
+        });
+
     } else {
         questionText.textContent = 'That is the end of the quiz';
         answerOptions.innerHTML = '';
-        btn.style.display = 'none'
+        // Optionally hide further navigation or quiz controls
+        // btn.style.display = 'none';
     }
 }
+
 
 
 
 const moveToNextQuestion = ()=>{
     currentQuestionIndex++
     showQuestion()
+}
 }
 
